@@ -54,4 +54,15 @@ void loop() {
       timerAlarmEnable(timer);
     }
   }
+  if (Serial.available()) {
+    char cmd = Serial.read();
+    if (&cmd == "o") {
+      digitalWrite(CAM_CNT, LOW);
+      Serial.println("Camera 3.3V Power off");
+    }
+    if (&cmd == "i") {
+      digitalWrite(CAM_CNT, HIGH);
+      Serial.println("Camera 3.3V Power on");
+    }
+  }
 }
