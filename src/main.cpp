@@ -34,6 +34,24 @@ void setup() {
   if (CAN.begin(Settings, CAN_RX, CAN_TX)) {
     Serial.println("Starting CAN failed!");
   }
+  delay(100);
+  switch (CAN.test())
+  {
+  case CAN_SUCCESS:
+    Serial.println("Success!!!");
+    break;
+  case CAN_UNKNOWN_ERROR:
+    Serial.println("Unknown error occurred");
+    break;
+  case CAN_NO_RESPONSE_ERROR:
+    Serial.println("No response error");
+    break;
+  case CAN_CONTROLLER_ERROR:
+    Serial.println("CAN CONTROLLER ERROR");
+    break;
+  default:
+    break;
+  }
 }
 
 void loop() {
@@ -50,19 +68,25 @@ void loop() {
       digitalWrite(CAM_CNT, HIGH);
       Serial.println("Camera 3.3V Power on");
     }
-    if (Data.id == 0x000) {
+    if (Data.id == 0x12a) {
+      timerRestart(timer);
       timerAlarmEnable(timer);
     }
   }
   if (Serial.available()) {
     char cmd = Serial.read();
-    if (&cmd == "o") {
+    Serial.println(cmd);
+    if (cmd == 'o') {
       digitalWrite(CAM_CNT, LOW);
       Serial.println("Camera 3.3V Power off");
     }
-    if (&cmd == "i") {
+    if (cmd == 'i') {
       digitalWrite(CAM_CNT, HIGH);
       Serial.println("Camera 3.3V Power on");
+    }
+    if (cmd == 't') {
+      timerRestart(timer);
+      timerAlarmEnable(timer);
     }
   }
 }
