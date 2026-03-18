@@ -53,7 +53,7 @@ void setup() {
   }
   timer = timerBegin(0, getApbFrequency() / 1000000, true);
   timerAttachInterrupt(timer, &counter, false);
-  timerAlarmWrite(timer, 20 * 1000000, false);
+  timerAlarmWrite(timer, 10 * 1000000, false);
 }
 
 void loop() {
