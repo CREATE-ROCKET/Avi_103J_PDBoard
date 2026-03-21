@@ -7,6 +7,9 @@
 
 bool CAM_PWR = true;
 bool CAM_PWR_Prev = true;
+bool Top = false;
+
+uint16_t count_CAM = 0;
 
 hw_timer_t *timer = NULL;
 
@@ -19,7 +22,9 @@ can_setting_t can_setting = {
 };
 
 IRAM_ATTR void counter() {
-  CAM_PWR = false;
+  if (Top) {
+    count_CAM++;
+  }
 }
 
 void setup() {
@@ -54,6 +59,7 @@ void setup() {
   timer = timerBegin(0, getApbFrequency() / 1000000, true);
   timerAttachInterrupt(timer, &counter, false);
   timerAlarmWrite(timer, 10 * 1000000, false);
+  timerAlarmEnable(timer);
 }
 
 void loop() {
@@ -69,8 +75,7 @@ void loop() {
       CAM_PWR = true;
     }
     if (Data.id == 0x12a) {
-      timerRestart(timer);
-      timerAlarmEnable(timer);
+      Top = true;
     }
   }
   if (Serial.available()) {
@@ -83,9 +88,13 @@ void loop() {
       CAM_PWR = true;
     }
     if (cmd == 't') {
-      timerRestart(timer);
-      timerAlarmEnable(timer);
+      Top = true;
     }
+  }
+  if (count_CAM >= 10000) {
+    CAM_PWR = false;
+    Top = false;
+    count_CAM = 0;
   }
   if (CAM_PWR) {
     digitalWrite(CAM_CNT, HIGH);
