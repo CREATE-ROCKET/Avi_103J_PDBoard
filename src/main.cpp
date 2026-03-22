@@ -16,7 +16,7 @@ hw_timer_t *timer = NULL;
 CAN_CREATE CAN(true);
 
 can_setting_t can_setting = {
-  .baudRate = (long)100E3,
+  .baudRate = (long)125E3,
   .multiData_send = true,
   .filter_config = CAN_FILTER_DEFAULT,
 };
