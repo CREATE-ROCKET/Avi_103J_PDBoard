@@ -8,8 +8,10 @@
 bool CAM_PWR = true;
 bool CAM_PWR_Prev = true;
 bool Top = false;
+bool CAN_Resp = false;
 
 uint16_t count_CAM = 0;
+uint8_t CAN_Send[1] = {1};
 
 hw_timer_t *timer = NULL;
 
@@ -77,6 +79,9 @@ void loop() {
     if (Data.id == 0x12a) {
       Top = true;
     }
+    if (Data.id == 0x320) {
+      CAN_Resp = true;
+    } 
   }
   if (Serial.available()) {
     char cmd = Serial.read();
@@ -107,6 +112,9 @@ void loop() {
     if (CAM_PWR_Prev) {
       Serial.println("Camera 3.3V Power off");
     }
+  }
+  if (CAN_Resp) {
+    CAN.sendData(0x321, CAN_Send, 1);
   }
   CAM_PWR_Prev = CAM_PWR;
 }
